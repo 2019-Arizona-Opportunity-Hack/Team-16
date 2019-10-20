@@ -1,53 +1,104 @@
 <template>
-    <v-container>
-        <v-form v-model="valid">
-            <v-container class="d-flex justify-center">
-                    <v-row>
-                        <v-col
-                                cols="12"
-                                md="6"
-                        >
-                            <v-text-field
-                                    v-model="firstname"
-                                    :rules="nameRules"
-                                    :counter="10"
-                                    label="First name"
-                                    required
-                            ></v-text-field>
-                        </v-col>
+    <v-container class="mt-4">
+        <div v-if="step === 1">
+            <v-form v-model="stepOneValid">
+                <div class="text-center">
+                    <p class="ma-0 pa-0">What can we help you with today?</p>
+                    <small>(Please select at least one option.)</small>
+                    <div class="d-flex justify-space-around">
+                        <v-checkbox v-model="userType.isVolunteer" label="I would like to volunteer." color="green"
+                                    value="yes" hide-details/>
+                        <v-checkbox v-model="userType.isDonor" label="I would like to donate." color="green"
+                                    value="yes" hide-details/>
+                        <v-checkbox v-model="userType.isClient" label="I'm looking for help." color="green"
+                                    value="yes" hide-details/>
+                    </div>
+                </div>
+                <v-row>
+                    <v-col cols="12" md="6">
+                        <v-text-field v-model="firstname" :rules="isRequired" label="First Name*" required/>
+                    </v-col>
 
-                        <v-col
-                                cols="12"
-                                md="6"
-                        >
-                            <v-text-field
-                                    v-model="lastname"
-                                    :rules="nameRules"
-                                    :counter="10"
-                                    label="Last name"
-                                    required
-                            ></v-text-field>
-                        </v-col>
+                    <v-col cols="12" md="6">
+                        <v-text-field v-model="lastname" :rules="isRequired" label="Last Name*" required/>
+                    </v-col>
 
-                        <v-col
-                                cols="12"
-                                md="12"
+                    <v-col cols="12" md="12">
+                        <v-text-field v-model="email" :rules="emailRules" label="E-mail*" required/>
+                    </v-col>
+                    <v-col cols="12" class="text-center">
+                        <v-btn :disabled="!stepOneValid || !isABoxChecked" color="success" @click="step++">Next</v-btn>
+                    </v-col>
+                </v-row>
+            </v-form>
+        </div>
+        <div v-else>
+            <div class="text-right">
+                <v-btn color="info" @click="step--">Back</v-btn>
+            </div>
+            <v-form v-model="stepTwoValid">
+                <v-row>
+                    <v-col cols="12" md="6">
+                        <v-text-field v-model="phoneNumber" :rules="isRequired" label="Phone Number*" required/>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-dialog
+                                ref="dialog"
+                                v-model="modal"
+                                :return-value.sync="birthdate"
+                                persistent
+                                width="290px"
                         >
-                            <v-text-field
-                                    v-model="email"
-                                    :rules="emailRules"
-                                    label="E-mail"
-                                    required
-                            ></v-text-field>
-                        </v-col>
-                        <!--<v-col-->
-                                <!--cols="12"-->
-                                <!--md="3">-->
-                            <!--<v-switch v-model="something" class="ma-4" label="Something"></v-switch>-->
-                        <!--</v-col>-->
-                    </v-row>
-            </v-container>
-        </v-form>
+                            <template v-slot:activator="{ on }">
+                                <v-text-field
+                                        v-model="birthdate"
+                                        :rules="isRequired"
+                                        label="Birthday*"
+                                        readonly
+                                        v-on="on"
+                                ></v-text-field>
+                            </template>
+                            <v-date-picker v-model="birthdate" scrollable>
+                                <v-spacer></v-spacer>
+                                <v-btn text color="primary" @click="modal = false">Cancel</v-btn>
+                                <v-btn text color="primary" @click="$refs.dialog.save(birthdate)">OK</v-btn>
+                            </v-date-picker>
+                        </v-dialog>
+                    </v-col>
+                    <v-col v-if="userType.isDonor" cols="12">
+                        <v-text-field v-model="business" label="Business"/>
+                    </v-col>
+                    <v-col v-if="userType.isVolunteer" cols="12">
+                        <p>Shirt Size</p>
+                        <v-radio-group v-model="shirtSize" row>
+                            <v-radio label="XS" value="XS"/>
+                            <v-radio label="SM" value="SM"/>
+                            <v-radio label="MD" value="MD"/>
+                            <v-radio label="LG" value="LG"/>
+                            <v-radio label="XL" value="XL"/>
+                            <v-radio label="XXL" value="XXL"/>
+                        </v-radio-group>
+                    </v-col>
+                    <v-col cols="12">
+                        <v-text-field v-model="streetAddress" :rules="isRequired" label="Address*" required/>
+                    </v-col>
+                    <v-col cols="12" md="4">
+                        <v-text-field v-model="city" :rules="isRequired" label="City*" required/>
+                    </v-col>
+                    <v-col cols="12" md="4">
+                        <v-text-field v-model="state" :rules="isRequired" label="State*" required/>
+                    </v-col>
+                    <v-col cols="12" md="4">
+                        <v-text-field v-model="zip" :rules="isRequired" label="Zipcode*" required/>
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col md="12" class="text-center">
+                        <v-btn :disabled="!stepTwoValid" color="success" @click="submit">Submit</v-btn>
+                    </v-col>
+                </v-row>
+            </v-form>
+        </div>
     </v-container>
 </template>
 
@@ -56,19 +107,46 @@
         name      : 'home',
         components: {},
         data      : () => ({
-            valid     : false,
-            firstname : '',
-            lastname  : '',
-            something : '',
-            nameRules : [
-                v => !!v || 'Name is required',
-                v => v.length <= 10 || 'Name must be less than 10 characters'
+            modal        : false,
+            step         : 1,
+            userType     : {
+                isVolunteer: null,
+                isDonor    : null,
+                isClient   : null
+            },
+            stepOneValid : false,
+            stepTwoValid : false,
+            firstname    : null,
+            lastname     : null,
+            phoneNumber  : null,
+            birthdate    : null,
+            streetAddress: null,
+            city         : null,
+            state        : null,
+            zip          : null,
+            business     : null,
+            shirtSize    : null,
+            isRequired   : [
+                v => !!v || 'Field is required.'
             ],
-            email     : '',
-            emailRules: [
+            email        : '',
+            emailRules   : [
                 v => !!v || 'E-mail is required',
                 v => /.+@.+/.test(v) || 'E-mail must be valid'
             ]
-        })
+        }),
+        computed  : {
+            isABoxChecked () {
+                if (this.userType.isVolunteer || this.userType.isDonor || this.userType.isClient) {
+                    return true
+                }
+                return false
+            }
+        },
+        methods   : {
+            submit () {
+                window.alert('Submitted!')
+            }
+        }
     }
 </script>
