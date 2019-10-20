@@ -5,8 +5,6 @@ module.exports = {
     getAll: (req, res) => {
         knex("users")
             .then((result) => {
-                console.log("hitting")
-                console.log(result)
                 res.json(result);
             });
     },
