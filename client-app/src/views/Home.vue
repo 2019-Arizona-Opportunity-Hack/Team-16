@@ -3,6 +3,7 @@
     <img alt="Vue logo" src="../assets/images/giphy.gif" />
     <HelloWorld msg="We're in business now, baby!" />
   </div>
+
 </template>
 
 <script>
