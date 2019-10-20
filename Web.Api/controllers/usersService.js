@@ -1,10 +1,12 @@
 const knex = require("../db/knex.js");
+const emailService = require("../utils/emailService");
 
 module.exports = {
 
     getAll: (req, res) => {
         knex("users")
             .then((result) => {
+                autoMailer(result);
                 res.json(result);
             });
     },
@@ -19,11 +21,13 @@ module.exports = {
 
     create: (req, res) => {
         knex("users")
-            .insert(req.body)
-            .returning('*')
+            .insert(req.body, "*")
             .then((result)=>{
-                res.json(result)
+                emailService.welcomeEmail(result[0]);
             })
+            .finally((result)=> {
+                res.json(result)
+            });
     },
 
     delete: (req, res) => {

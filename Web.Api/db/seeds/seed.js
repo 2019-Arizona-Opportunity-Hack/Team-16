@@ -18,7 +18,7 @@ exports.seed = function(knex) {
           state: "AZ",
           zipCode: 85207,
           businessName: "",
-          email: "darrell@gamil.com",
+          email: "darrell.couch16@gamil.com",
           createdOn: new Date(),
           createdAtEvent_Id: 1
         },
