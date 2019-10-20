@@ -3,7 +3,7 @@ module.exports = {
     development: {
         client: 'pg',
         connection: {
-          database: "users",
+          database: "zurisCircle",
           host: "localhost"
         },
         migrations: {
