@@ -4,6 +4,18 @@ const path = require("path");
 const app = express();
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 8000;
+// const cors = require("cors");
+// const corsWhiteList = ["http://localhost:8080"];
+// let corsOptions = {
+//   origin: (origin, callback) => {
+//     if (corsWhitelist.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(null, false);
+//     }
+//   }
+// };
+// app.use(cors(corsOptions));
 app.use(bodyParser.json({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
