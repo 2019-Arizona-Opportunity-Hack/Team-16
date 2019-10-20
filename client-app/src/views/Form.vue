@@ -1,6 +1,6 @@
 <template>
     <v-container class="mt-4">
-        <div v-if="step === 0" class="d-flex justify-center align-center" style="height: 24em;">
+        <div v-if="step === 0" class="d-flex justify-center align-center" style="height: 32em;">
             <v-btn style="width: 20em; height: 10em;" x-large color="success" @click="iNeedHelp(false)">
                 I would like to help.
                 <i class="white--text fa fa-3x fa-people-carry"/>
@@ -33,11 +33,11 @@
                 </div>
                 <v-row>
                     <v-col cols="12" md="6">
-                        <v-text-field v-model="firstname" :rules="isRequired" label="First Name*" required/>
+                        <v-text-field v-model="firstName" :rules="isRequired" label="First Name*" required/>
                     </v-col>
 
                     <v-col cols="12" md="6">
-                        <v-text-field v-model="lastname" :rules="isRequired" label="Last Name*" required/>
+                        <v-text-field v-model="lastName" :rules="isRequired" label="Last Name*" required/>
                     </v-col>
 
                     <v-col cols="12" md="12">
@@ -62,28 +62,28 @@
                         <v-dialog
                                 ref="dialog"
                                 v-model="modal"
-                                :return-value.sync="birthdate"
+                                :return-value.sync="birthday"
                                 persistent
                                 width="290px"
                         >
                             <template v-slot:activator="{ on }">
                                 <v-text-field
-                                        v-model="birthdate"
+                                        v-model="birthday"
                                         :rules="isRequired"
                                         label="Birthday*"
                                         readonly
                                         v-on="on"
                                 ></v-text-field>
                             </template>
-                            <v-date-picker v-model="birthdate" scrollable>
+                            <v-date-picker v-model="birthday" scrollable>
                                 <v-spacer></v-spacer>
                                 <v-btn text color="primary" @click="modal = false">Cancel</v-btn>
-                                <v-btn text color="primary" @click="$refs.dialog.save(birthdate)">OK</v-btn>
+                                <v-btn text color="primary" @click="$refs.dialog.save(birthday)">OK</v-btn>
                             </v-date-picker>
                         </v-dialog>
                     </v-col>
                     <v-col v-if="userType.isDonor" cols="12">
-                        <v-text-field v-model="business" label="Business"/>
+                        <v-text-field v-model="businessName" label="Business"/>
                     </v-col>
                     <v-col v-if="userType.isVolunteer" cols="12">
                         <p>Shirt Size</p>
@@ -106,7 +106,7 @@
                         <v-text-field v-model="state" :rules="isRequired" label="State*" required/>
                     </v-col>
                     <v-col cols="12" md="4">
-                        <v-text-field v-model="zip" :rules="isRequired" label="Zipcode*" required/>
+                        <v-text-field type="number" v-model="zipCode" :rules="isRequired" label="Zipcode*" required/>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -134,23 +134,27 @@
             },
             stepOneValid     : false,
             stepTwoValid     : false,
-            firstname        : null,
-            lastname         : null,
+            firstName        : null,
+            lastName         : null,
+            email            : '',
             phoneNumber      : null,
-            birthdate        : null,
+            birthday         : null,
             streetAddress    : null,
             city             : null,
             state            : null,
-            zip              : null,
-            business         : null,
+            zipCode          : null,
+            businessName     : null,
             shirtSize        : null,
             isRequired       : [
                 v => !!v || 'Field is required.'
             ],
-            email            : '',
             emailRules       : [
-                v => !!v || 'E-mail is required',
-                v => /.+@.+/.test(v) || 'E-mail must be valid'
+                v => !!v || 'E-mail is required.',
+                v => /.+@.+/.test(v) || 'E-mail must be valid.'
+            ],
+            isZip : [
+                v => !!v || 'Zip is required.',
+                v => /.+@.+/.test(v) || 'Zip must be valid.'
             ]
         }),
         computed  : {
@@ -163,13 +167,35 @@
         },
         methods   : {
             submit () {
-                if (this.needsHelpResponse) {
-                    this.$router.push('/help')
-                } else if (this.userType.isDonor) {
-                    this.$router.push('/donate')
-                } else {
-                    this.$router.push('/thankyou')
+
+                let userObj = {
+                    firstName    : this.firstName,
+                    lastName     : this.lastName,
+                    email        : this.email,
+                    phoneNumber  : this.phoneNumber,
+                    birthday     : this.birthday,
+                    streetAddress: this.streetAddress,
+                    city         : this.city,
+                    state        : this.state,
+                    zipCode      : this.zipCode,
+                    businessName : this.businessName,
+                    shirtSize    : this.shirtSize
                 }
+
+                this.axios.post('http://b8de006a.ngrok.io/user', userObj)
+                    .then((response) => {
+                        window.console.log('RESPONSE', response.data)
+                        if (this.needsHelpResponse) {
+                            this.$router.push({name: 'help', params: {user: response.data}})
+                        } else if (this.userType.isDonor) {
+                            this.$router.push({name: 'donate', params: {user: response.data}})
+                        } else {
+                            this.$router.push('/thankyou')
+                        }
+                    })
+                    .catch(error => {
+                        window.console.log(error)
+                    })
             },
             iNeedHelp (response) {
                 this.needsHelpResponse = response
