@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a7e9fbde-6f60-454d-b4b4-729ff5ed19ab" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web.Api/config/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web.Api/config/routes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Web.Api/controllers/payment_controller.js" beforeDir="false" afterPath="$PROJECT_DIR$/Web.Api/controllers/payment_controller.js" afterDir="false" />
-    </list>
+    <list default="true" id="a7e9fbde-6f60-454d-b4b4-729ff5ed19ab" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +60,7 @@
       <updated>1571518925932</updated>
       <workItem from="1571518933276" duration="942000" />
       <workItem from="1571522932962" duration="1262000" />
-      <workItem from="1571526684215" duration="6311000" />
+      <workItem from="1571526684215" duration="6412000" />
     </task>
     <servers />
   </component>
