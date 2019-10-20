@@ -4,7 +4,7 @@ exports.up = function(knex) {
       table.increments();
       table.string('name');
       table.date("date");
-      table.json("description");
+      table.text("description");
   })
 };
 
