@@ -1,6 +1,6 @@
 <template>
   <div class="donate">
-    Donate
+    Donate Page
   </div>
 </template>
 
