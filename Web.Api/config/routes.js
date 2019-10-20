@@ -6,10 +6,14 @@ module.exports = function(app){
 
   app.get('/', template.index);
 
+  //user routes
+  app.get("/users", userService.getAll);
 
-  app.get("/users", userService.getAll );
+  app.get("/user/:id", userService.get);
 
   app.post("/user", userService.create);
+
+  app.put("/user/:id", userService.update);
 
   app.delete("/user/:id", userService.delete);
 
