@@ -1,5 +1,6 @@
 <template>
     <div class="container mt-4">
+        <h1>USER ID: {{userID}}</h1>
         <!--<i class="deep-purple&#45;&#45;text fas fa-3x fa-couch"/>-->
         <!--<i class="red&#45;&#45;text fas fa-3x fa-street-view"/>-->
         <!--<i class="fas fa-3x fa-hamburger"/>-->
@@ -201,6 +202,9 @@
                 v => !!v || 'Field is required.'
             ]
         }),
+        created () {
+            this.userID = this.$route.params.user
+        },
         methods   : {
             submit () {
                 let finalArr    = []
