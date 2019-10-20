@@ -1,8 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-import Donate from "../views/Donate.vue";
 import Form from "../views/Form.vue";
+import Donate from "../views/Donate.vue";
+import Help from "../views/Help.vue";
+import ThankYou from '../views/ThankYou'
 
 Vue.use(VueRouter);
 
@@ -13,14 +15,24 @@ const routes = [
     component: Home
   },
   {
+    path: "/form",
+    name: "form",
+    component: Form
+  },
+  {
     path: "/donate",
     name: "donate",
     component: Donate
   },
   {
-    path: "/form",
-    name: "form",
-    component: Form
+    path: "/help",
+    name: "help",
+    component: Help
+  },
+  {
+    path: "/thankyou",
+    name: "thankyou",
+    component: ThankYou
   }
 ];
 

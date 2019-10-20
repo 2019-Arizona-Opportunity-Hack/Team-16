@@ -1,18 +1,35 @@
 <template>
     <v-container class="mt-4">
-        <div v-if="step === 1">
+        <div v-if="step === 0" class="d-flex justify-center align-center" style="height: 24em;">
+            <v-btn style="width: 20em; height: 10em;" x-large color="success" @click="iNeedHelp(false)">
+                I would like to help.
+                <i class="white--text fa fa-3x fa-people-carry"/>
+            </v-btn>
+            <div style="width: 5em;"/>
+            <v-btn style="width: 20em; height: 10em;" x-large color="blue" @click="iNeedHelp(true)">
+                I need help.
+                <i class="fa fa-3x fa-hands-helping"/>
+            </v-btn>
+        </div>
+        <div v-else-if="step === 1">
+            <div class="text-right">
+                <v-btn color="info" @click="step--">Back</v-btn>
+            </div>
             <v-form v-model="stepOneValid">
-                <div class="text-center">
-                    <p class="ma-0 pa-0">What can we help you with today?</p>
+                <div class="text-center" v-if="!needsHelpResponse">
+                    <p class="ma-0 pa-0">How would you like to help?</p>
                     <small>(Please select at least one option.)</small>
                     <div class="d-flex justify-space-around">
-                        <v-checkbox v-model="userType.isVolunteer" label="I would like to volunteer." color="green"
-                                    value="yes" hide-details/>
-                        <v-checkbox v-model="userType.isDonor" label="I would like to donate." color="green"
-                                    value="yes" hide-details/>
-                        <v-checkbox v-model="userType.isClient" label="I'm looking for help." color="green"
-                                    value="yes" hide-details/>
+                        <v-checkbox v-model="userType.isVolunteer"
+                                    label="I would like to volunteer." color="green"
+                                    value="yes" hide-details></v-checkbox>
+                        <v-checkbox v-model="userType.isDonor" label="I would like to donate."
+                                    color="green"
+                                    value="yes" hide-details></v-checkbox>
                     </div>
+                </div>
+                <div v-else class="text-center">
+                    <p class="ma-0 pa-0">We are here to help.</p>
                 </div>
                 <v-row>
                     <v-col cols="12" md="6">
@@ -107,37 +124,38 @@
         name      : 'home',
         components: {},
         data      : () => ({
-            modal        : false,
-            step         : 1,
-            userType     : {
+            needsHelpResponse: false,
+            modal            : false,
+            step             : 0,
+            userType         : {
                 isVolunteer: null,
                 isDonor    : null,
                 isClient   : null
             },
-            stepOneValid : false,
-            stepTwoValid : false,
-            firstname    : null,
-            lastname     : null,
-            phoneNumber  : null,
-            birthdate    : null,
-            streetAddress: null,
-            city         : null,
-            state        : null,
-            zip          : null,
-            business     : null,
-            shirtSize    : null,
-            isRequired   : [
+            stepOneValid     : false,
+            stepTwoValid     : false,
+            firstname        : null,
+            lastname         : null,
+            phoneNumber      : null,
+            birthdate        : null,
+            streetAddress    : null,
+            city             : null,
+            state            : null,
+            zip              : null,
+            business         : null,
+            shirtSize        : null,
+            isRequired       : [
                 v => !!v || 'Field is required.'
             ],
-            email        : '',
-            emailRules   : [
+            email            : '',
+            emailRules       : [
                 v => !!v || 'E-mail is required',
                 v => /.+@.+/.test(v) || 'E-mail must be valid'
             ]
         }),
         computed  : {
             isABoxChecked () {
-                if (this.userType.isVolunteer || this.userType.isDonor || this.userType.isClient) {
+                if (this.userType.isVolunteer || this.userType.isDonor || this.needsHelpResponse) {
                     return true
                 }
                 return false
@@ -145,7 +163,17 @@
         },
         methods   : {
             submit () {
-                window.alert('Submitted!')
+                if (this.needsHelpResponse) {
+                    this.$router.push('/help')
+                } else if (this.userType.isDonor) {
+                    this.$router.push('/donate')
+                } else {
+                    this.$router.push('/thankyou')
+                }
+            },
+            iNeedHelp (response) {
+                this.needsHelpResponse = response
+                this.step++
             }
         }
     }
