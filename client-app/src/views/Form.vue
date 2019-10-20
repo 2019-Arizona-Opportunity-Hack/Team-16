@@ -1,6 +1,6 @@
 <template>
     <v-container class="mt-4">
-        <div v-if="step === 0" class="d-flex justify-center align-center" style="height: 24em;">
+        <div v-if="step === 0" class="d-flex justify-center align-center" style="height: 32em;">
             <v-btn style="width: 20em; height: 10em;" x-large color="success" @click="iNeedHelp(false)">
                 I would like to help.
                 <i class="white--text fa fa-3x fa-people-carry"/>
@@ -136,6 +136,7 @@
             stepTwoValid     : false,
             firstname        : null,
             lastname         : null,
+            email            : '',
             phoneNumber      : null,
             birthdate        : null,
             streetAddress    : null,
@@ -147,7 +148,6 @@
             isRequired       : [
                 v => !!v || 'Field is required.'
             ],
-            email            : '',
             emailRules       : [
                 v => !!v || 'E-mail is required',
                 v => /.+@.+/.test(v) || 'E-mail must be valid'
@@ -163,13 +163,35 @@
         },
         methods   : {
             submit () {
-                if (this.needsHelpResponse) {
-                    this.$router.push('/help')
-                } else if (this.userType.isDonor) {
-                    this.$router.push('/donate')
-                } else {
-                    this.$router.push('/thankyou')
+
+                let userObj = {
+                    firstname    : this.firstname,
+                    lastname     : this.lastname,
+                    email        : this.email,
+                    phoneNumber  : this.phoneNumber,
+                    birthdate    : this.birthdate,
+                    streetAddress: this.streetAddress,
+                    city         : this.city,
+                    state        : this.state,
+                    zip          : this.zip,
+                    business     : this.business,
+                    shirtSize    : this.shirtSize
                 }
+
+                this.axios.post('http://127bd9cc.ngrok.io/user', userObj)
+                    .then((response) => {
+                        window.console.log(response.data)
+                        // if (this.needsHelpResponse) {
+                        //     this.$router.push({name: 'help', params: {user: response.data}})
+                        // } else if (this.userType.isDonor) {
+                        //     this.$router.push({name: 'donate', params: {user: response.data}})
+                        // } else {
+                        //     this.$router.push('/thankyou')
+                        // }
+                    })
+                    .catch(error => {
+                        window.console.log(error)
+                    })
             },
             iNeedHelp (response) {
                 this.needsHelpResponse = response
